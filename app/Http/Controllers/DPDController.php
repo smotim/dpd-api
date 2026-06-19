@@ -33,4 +33,26 @@ class DPDController
         $cities = $this->DPDService->queryCities($request->validated());
         return response()->json($cities);
     }
+
+    public function getCity(int $id): JsonResponse
+    {
+        $city = $this->DPDService->getCityById($id);
+
+        if (!$city) {
+            return response()->json(['message' => 'City not found'], 404);
+        }
+
+        return response()->json($city);
+    }
+
+    public function getCityByDpdCityId(string $dpdCityId): JsonResponse
+    {
+        $city = $this->DPDService->getCityByDpdCityId($dpdCityId);
+
+        if (!$city) {
+            return response()->json(['message' => 'City not found'], 404);
+        }
+
+        return response()->json($city);
+    }
 }

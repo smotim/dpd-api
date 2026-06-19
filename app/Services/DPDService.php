@@ -28,9 +28,25 @@ class DPDService
      */
     public function queryCities(array $data): Collection
     {
-        return $this->cityRepository::whereRaw("to_tsvector('russian', name) @@ to_tsquery('russian', ?)")
-            ->setBindings([$data['query'] . ':*'])
+        return $this->cityRepository::query()
+            ->where('country_id', '=', $data['country_id'])
+            ->whereRaw("to_tsvector('russian', name) @@ to_tsquery('russian', ?)", [$data['query'] . ':*'])
             ->with('terminals')
             ->get();
+    }
+
+    public function getCityById(int $id): ?\App\Models\City
+    {
+        return $this->cityRepository::query()
+            ->with('terminals')
+            ->find($id);
+    }
+
+    public function getCityByDpdCityId(string $dpdCityId): ?\App\Models\City
+    {
+        return $this->cityRepository::query()
+            ->with('terminals')
+            ->where('city_id', '=', $dpdCityId)
+            ->first();
     }
 }
