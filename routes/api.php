@@ -16,3 +16,9 @@ use App\Http\Controllers\DPDController;
 
 Route::get('cities', [DPDController::class, 'queryCities'])
     ->name('cities.query');
+Route::get('cities/by-dpd-city-id/{dpdCityId}', [DPDController::class, 'getCityByDpdCityId'])
+    ->where('dpdCityId', '[0-9]+')
+    ->name('cities.show-by-dpd-city-id');
+Route::get('cities/{id}', [DPDController::class, 'getCity'])
+    ->whereNumber('id')
+    ->name('cities.show');
