@@ -28,9 +28,13 @@ class DPDService
      */
     public function queryCities(array $data): Collection
     {
+        $query = trim((string) ($data['query'] ?? ''));
+        $searchTerms = preg_split('/\s+/', $query, -1, PREG_SPLIT_NO_EMPTY) ?: [];
+        $tsQuery = implode(' & ', array_map(static fn(string $term) => $term . ':*', $searchTerms));
+
         return $this->cityRepository::query()
             ->where('country_id', '=', $data['country_id'])
-            ->whereRaw("to_tsvector('russian', name) @@ to_tsquery('russian', ?)", [$data['query'] . ':*'])
+            ->whereRaw("to_tsvector('russian', name) @@ to_tsquery('russian', ?)", [$tsQuery])
             ->with('terminals')
             ->get();
     }
